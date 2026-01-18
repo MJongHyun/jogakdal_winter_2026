@@ -3,96 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>시네마 콘서트 : 사계</title>
+    <title>사계 : 시네마 콘서트</title>
     <style>
-        /* 1. 배경 설정: 영화관 느낌의 딥 레드 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background-color: #1a0000; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden; /* 모바일 브라우저 튕김 방지 */
+            background-color: #0d0d0d; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; overflow: hidden;
         }
 
-        /* 2. 컨테이너: 화면의 80% 높이 설정 */
         .carousel-container {
+            width: 92vw;
+            height: 82vh; /* 80%보다 아주 살짝 키워 시원하게 배치 */
             position: relative;
-            width: 90vw;       /* 가로 폭 90% */
-            height: 80vh;      /* 세로 높이 80% (요청 반영) */
             overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            background-color: #000; /* 이미지 여백 시 검은색 배경 */
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
         }
 
-        /* 3. 슬라이드 트랙 */
         .carousel-slide {
             display: flex;
-            width: 400%; /* 슬라이드 4개 */
+            width: 400%;
             height: 100%;
-            transition: transform 0.4s ease-out;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* 4. 이미지 처리: 절대 잘리지 않게 설정 */
         .slide-item {
             width: 25%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .slide-item img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* ⭐ 이미지가 잘리지 않고 전체가 다 보이게 함 */
+            object-fit: cover; /* 세로를 꽉 채우며 글자가 크게 보이게 함 */
         }
 
-        /* 5. 하단 인디케이터 */
-        .indicators {
+        .dots {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            transition: 0.3s;
         }
-        .dot.active {
-            background-color: #fff;
-            transform: scale(1.2);
-        }
-
-        /* 터치 안내 */
-        .hint {
-            position: fixed;
-            top: 5vh;
-            color: rgba(255,255,255,0.4);
-            font-size: 0.9rem;
-        }
+        .dot.active { background-color: #fff; width: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="hint">← 좌우로 넘겨보세요 →</div>
-
     <div class="carousel-container">
         <div class="carousel-slide" id="track">
-            <div class="slide-item"><img src="spring.png" alt="봄"></div>
-            <div class="slide-item"><img src="summer.png" alt="여름"></div>
-            <div class="slide-item"><img src="autumn.png" alt="가을"></div>
-            <div class="slide-item"><img src="winter.png" alt="겨울"></div>
+            <div class="slide-item"><img src="spring_v.png"></div>
+            <div class="slide-item"><img src="summer_v.png"></div>
+            <div class="slide-item"><img src="autumn_v.png"></div>
+            <div class="slide-item"><img src="winter_v.png"></div>
         </div>
-
-        <div class="indicators">
+        <div class="dots">
             <div class="dot active"></div>
             <div class="dot"></div>
             <div class="dot"></div>
@@ -103,19 +76,14 @@
     <script>
         const track = document.getElementById('track');
         const dots = document.querySelectorAll('.dot');
-        let startX = 0;
-        let currentIndex = 0;
+        let startX = 0, currentIndex = 0;
 
-        // 터치 인식
         window.addEventListener('touchstart', e => startX = e.touches[0].pageX);
         window.addEventListener('touchend', e => {
-            const endX = e.changedTouches[0].pageX;
-            const diff = startX - endX;
-
-            if (Math.abs(diff) > 50) { // 50px 이상 밀었을 때만 작동
+            const diff = startX - e.changedTouches[0].pageX;
+            if (Math.abs(diff) > 40) {
                 if (diff > 0 && currentIndex < 3) currentIndex++;
                 else if (diff < 0 && currentIndex > 0) currentIndex--;
-                
                 track.style.transform = `translateX(-${currentIndex * 25}%)`;
                 dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
             }
